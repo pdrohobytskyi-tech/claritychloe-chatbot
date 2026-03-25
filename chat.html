@@ -113,7 +113,7 @@
         .n8n-chat > div > div:nth-child(2),
         .chat-messages-list {
             padding: 1.5rem 1rem !important; 
-            padding-bottom: 250px !important; /* Large padding to guarantee scrolling past floating input */
+            padding-bottom: 24px !important; /* Returned to normal padding since footer is now in-flow */
             max-width: 800px !important;
             margin: 0 auto !important;
             width: 100% !important;
@@ -128,30 +128,40 @@
             clear: both;
         }
 
-        /* Clean up n8n native footer to prevent strange extra bars */
+        /* --- Footer (Input Section) ---
+         * Let n8n's flex layout place this at the bottom naturally.
+         * Remoing `position: fixed` solves all iOS keyboard scrolling bugs 
+         * and prevents the "two mystery bars" background separation.
+         */
         .chat-footer {
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
+            padding: 8px 16px max(16px, env(safe-area-inset-bottom)) 16px !important;
+            display: flex !important;
+            justify-content: center !important;
+            position: relative !important;
         }
 
-        /* Floating Input Bar - FIXED TO BOTTOM OF VIEWPORT */
+        /* Nuke the N8N Branding text/logos completely inside the footer */
+        .chat-footer a, .chat-footer > div:last-child:not(:has(textarea)), .chat-footer p {
+            display: none !important;
+        }
+
+        /* The visual floating pill (is actually just the form inside the footer) */
         .chat-input,
         form,
         .n8n-chat div:has(textarea) {
-            position: fixed !important;
-            bottom: max(20px, env(safe-area-inset-bottom)) !important;
-            left: 50% !important;
-            transform: translateX(-50%) !important;
-            width: calc(100% - 32px) !important;
+            position: relative !important;
+            width: 100% !important;
             max-width: 760px !important;
-            margin: 0 !important;
-            background: white !important;
+            margin: 0 auto !important;
+            background: #F0EBE3 !important; /* Soft palette color instead of white */
             border-radius: 30px !important;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.06), 0 -10px 40px rgba(253, 251, 247, 0.9) !important; /* Glow to mask text behind */
-            border: 1px solid #E8E0D8 !important; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04), 0 0 0 1px rgba(232,224,216,0.6) inset !important;
             padding: 0.35rem 0.5rem !important;
-            z-index: 50 !important;
+            display: flex !important;
+            align-items: center !important;
         }
         
         /* Adjust md: breakpoint for form repositioning due to sidebar */
@@ -170,11 +180,12 @@
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
-            padding-left: 1.25rem !important;
-            padding-top: 0.65rem !important;
+            padding-left: 1rem !important;
+            padding-top: 0.70rem !important;
             font-family: 'Inter', sans-serif !important;
             color: #2C2420 !important;
-            font-size: 1rem !important; /* 16px to prevent iOS zoom */
+            font-size: 16px !important; /* 16px forces iOS to NOT zoom */
+            max-height: 120px !important; /* Stop infinite expanding */
         }
 
         .n8n-chat textarea::placeholder { color: #A09890 !important; }
@@ -193,7 +204,7 @@
         }
         
         .n8n-chat button[type="submit"]:not(:disabled) {
-            background-color: #7BAE7F !important; /* green success color */
+            background-color: #10B981 !important; /* Emerald 500 - much more accented green */
             color: white !important;
             transform: scale(1.05) !important;
         }
@@ -286,7 +297,8 @@
     <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-brand-bg-main">
         
         <!-- Mobile Header (Hidden on Desktop) -->
-        <header class="md:hidden flex items-center justify-between p-4 bg-brand-bg-main/90 backdrop-blur-md border-b border-brand-bg-alt z-40 shadow-sm relative">
+        <!-- Made 'fixed' to prevent disappearing inside flex container on scroll -->
+        <header class="md:hidden fixed top-0 w-full flex items-center justify-between p-4 bg-brand-bg-main/95 backdrop-blur-md border-b border-brand-bg-alt z-[60] shadow-sm">
             <a href="index.html" class="w-10 h-10 flex items-center justify-center rounded-full bg-brand-bg-alt text-brand-text-secondary active:scale-95 transition-transform">
                 <i class="fa-solid fa-arrow-left"></i>
             </a>
@@ -303,10 +315,11 @@
         </header>
 
         <!-- Dynamic Top Fade -->
-        <div class="absolute top-16 md:top-0 h-12 w-full bg-gradient-to-b from-brand-bg-main to-transparent z-10 pointer-events-none hidden md:block"></div>
+        <div class="absolute top-[72px] md:top-0 h-12 w-full bg-gradient-to-b from-brand-bg-main to-transparent z-10 pointer-events-none hidden md:block"></div>
 
         <!-- Chat Container -->
-        <div id="chat-wrapper" class="flex-1 w-full h-full relative">
+        <!-- Added pt-[72px] for mobile to account for fixed header -->
+        <div id="chat-wrapper" class="flex-1 w-full h-full relative pt-[72px] md:pt-0">
             <div id="n8n-chat" class="w-full h-full"></div>
         </div>
 
@@ -406,18 +419,17 @@
                 }
             });
 
-            // Make sure the last message has margin bottom so the input doesn't overlap it
+            // Make sure the last message has margin bottom
             const allMessages = document.querySelectorAll('.chat-message');
             if(allMessages.length > 0) {
-                // remove extra margin from all
-                allMessages.forEach(m => m.style.marginBottom = '1.5rem');
-                // add large margin to the very last one
-                allMessages[allMessages.length-1].style.marginBottom = '80px';
+                allMessages.forEach(m => m.style.marginBottom = '1.25rem');
+                // No need for huge margin on last message since footer is relative now
                 
                 // Keep scrolling bottom logic stable when new messages arrive
-                const list = document.querySelector('.chat-messages-list');
-                if (list) {
+                const list = document.querySelector('.chat-messages-list, .messages-list');
+                if (list && !list.dataset.scrolled) {
                     list.scrollTop = list.scrollHeight;
+                    list.dataset.scrolled = 'true';
                 }
             }
         };
