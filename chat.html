@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Coach | ClarityChloe</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- V2 Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <!-- n8n Chat CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            // V2 Colors
+                            primary: '#C4A882',
+                            'primary-dark': '#1A1614',
+                            accent: '#D4A5A5',
+                            'accent-light': '#F0E0E0',
+                            lavender: '#D5C8E6',
+                            sage: '#C5D1C5',
+                            'bg-main': '#FDFBF7',
+                            'bg-alt': '#F0EBE3',
+                            'bg-emotional': '#F5E6E0',
+                            'bg-dark': '#3D2C2C',
+                            'text-primary': '#2C2420',
+                            'text-secondary': '#7A6E65',
+                            success: '#7BAE7F',
+                            error: '#C27070',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['"Playfair Display"', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* --- N8N CHAT OVERRIDES FOR LLM UI --- */
+        :root {
+            --chat--color--primary: #D4A5A5; /* accent */
+            --chat--color--primary-shade-50: #c49191; 
+            --chat--color--secondary: #C5D1C5; /* sage */
+            
+            --chat--color-white: #ffffff;
+            --chat--color-light: #FDFBF7; /* bg-main */
+            --chat--color-dark: #2C2420; /* text-primary */
+            
+            --chat--window--width: 100%;
+            --chat--window--height: 100%;
+            --chat--border-radius: 0; 
+            
+            --chat--header--background: transparent;
+            --chat--header--color: #2C2420;
+            
+            --chat--message--user--background: #D4A5A5; 
+            --chat--message--user--color: #ffffff;
+            --chat--message--bot--background: #F0EBE3; 
+            --chat--message--bot--color: #2C2420; 
+            
+            --chat--toggle--background: #D4A5A5;
+            --chat--toggle--color: white;
+            
+            --chat--textarea--height: 52px; 
+            --chat--message--border-radius: 1.5rem; 
+            --chat--message--font-size: 0.95rem; 
+            --chat--message--padding: 0.8rem 1.2rem; 
+            --chat--message-line-height: 1.6; 
+        }
+        
+        /* Remove n8n branding */
+        a[href*="n8n.io"] { display: none !important; }
+        .n8n-chat-branding { display: none !important; }
+
+        body { 
+            background-color: #FDFBF7; 
+            color: #2C2420;
+            overflow: hidden; /* App-like feel */
+        }
+
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #D5C8E6; border-radius: 20px; }
+
+        .n8n-chat, #n8n-chat {
+            width: 100% !important;
+            height: 100% !important;
+            position: relative !important;
+            background: #FDFBF7 !important;
+            box-shadow: none !important;
+        }
+
+        .n8n-chat header, #n8n-chat header {
+            display: none !important; 
+        }
+
+        /* Message List Area */
+        .messages-list,
+        .n8n-chat > div > div:nth-child(2) {
+            padding: 1.5rem 1rem !important; 
+            padding-bottom: 140px !important; /* CRITICAL: Space for the floating input so it doesn't overlap last message */
+            max-width: 800px !important;
+            margin: 0 auto !important;
+            width: 100% !important;
+            height: 100% !important;
+            overflow-y: auto !important;
+            scroll-behavior: smooth;
+        }
+
+        .chat-message, .message-row {
+            max-width: 85% !important;
+            margin-bottom: 1.5rem !important;
+            clear: both;
+        }
+
+        /* Floating Input Bar - FIXED TO BOTTOM OF VIEWPORT */
+        .chat-input,
+        form,
+        .n8n-chat div:has(textarea) {
+            position: fixed !important;
+            bottom: max(20px, env(safe-area-inset-bottom)) !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: calc(100% - 32px) !important;
+            max-width: 760px !important;
+            margin: 0 !important;
+            background: white !important;
+            border-radius: 30px !important;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06), 0 -10px 40px rgba(253, 251, 247, 0.9) !important; /* Glow to mask text behind */
+            border: 1px solid #E8E0D8 !important; 
+            padding: 0.35rem 0.5rem !important;
+            z-index: 50 !important;
+        }
+        
+        /* Adjust md: breakpoint for form repositioning due to sidebar */
+        @media (min-width: 768px) {
+            .chat-input, form, .n8n-chat div:has(textarea) {
+                left: calc(50% + 140px) !important; /* Offset by half the sidebar width (280px / 2 = 140px) */
+            }
+        }
+
+        .chat-input:focus-within {
+            box-shadow: 0 10px 40px rgba(212, 165, 165, 0.15) !important;
+            border-color: #D4A5A5 !important;
+        }
+
+        .n8n-chat textarea {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding-left: 1.25rem !important;
+            padding-top: 0.65rem !important;
+            font-family: 'Inter', sans-serif !important;
+            color: #2C2420 !important;
+            font-size: 1rem !important; /* 16px to prevent iOS zoom */
+        }
+
+        .n8n-chat textarea::placeholder { color: #A09890 !important; }
+        
+        .n8n-chat button[type="submit"] {
+            border-radius: 50% !important;
+            width: 40px !important;
+            height: 40px !important;
+            margin: 4px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background-color: #D4A5A5 !important;
+        }
+
+        /* Avatar styling for bot */
+        .clarity-msg-avatar {
+            position: absolute;
+            left: -48px;
+            bottom: 4px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            z-index: 10;
+        }
+
+        /* Mobile Drawer Animations */
+        #mobile-drawer {
+            transform: translateY(100%);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #mobile-drawer.open {
+            transform: translateY(0);
+        }
+        #drawer-backdrop {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        #drawer-backdrop.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+<body class="h-[100dvh] w-screen flex antialiased"> <!-- Use 100dvh for mobile proper height -->
+
+    <!-- DESKTOP SIDEBAR -->
+    <aside class="hidden md:flex flex-col w-[280px] bg-brand-bg-alt border-r border-brand-bg-main/50 h-full shadow-[2px_0_10px_rgba(0,0,0,0.02)] z-20 shrink-0">
+        
+        <div class="px-6 py-8 border-b border-brand-bg-main">
+            <a href="index.html" class="inline-flex items-center gap-2 mb-6 text-brand-text-secondary hover:text-brand-text-primary transition-colors text-sm font-medium">
+                <i class="fa-solid fa-arrow-left text-xs"></i> Back to Hub
+            </a>
+            <h1 class="text-3xl font-bold font-heading text-brand-primary-dark tracking-tight">AI Coach</h1>
+            <p class="text-sm text-brand-text-secondary mt-1">Your emotional anchor</p>
+        </div>
+
+        <div class="flex-1 overflow-y-auto custom-scroll p-6">
+            <h3 class="text-[11px] font-bold text-brand-sage uppercase tracking-[0.15em] mb-4 text-brand-text-secondary/70">Conversation Starters</h3>
+            
+            <div class="space-y-4">
+                <button onclick="fillChatInput('I don\'t know where to start today, help me do just one thing.')" class="w-full text-left bg-white/70 hover:bg-white p-4 rounded-2xl border border-white/80 cursor-pointer transition-all duration-300 group shadow-sm hover:shadow-md hover:-translate-y-0.5 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-brand-primary opacity-50"></div>
+                    <p class="text-[10px] text-brand-text-secondary uppercase font-bold mb-1 tracking-wider">Analysis Paralysis</p>
+                    <p class="text-sm font-medium text-brand-primary-dark leading-snug">
+                        "I don't know where to start today..."
+                    </p>
+                </button>
+
+                <button onclick="fillChatInput('I need a small win to feel better.')" class="w-full text-left bg-brand-sage/20 hover:bg-brand-sage/30 p-4 rounded-2xl border border-brand-sage/40 cursor-pointer transition-all duration-300 group shadow-sm hover:shadow-md hover:-translate-y-0.5 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-brand-sage"></div>
+                    <p class="text-[10px] text-brand-text-secondary uppercase font-bold mb-1 tracking-wider">Dopamine Hit</p>
+                    <p class="text-sm font-medium text-brand-primary-dark leading-snug">
+                        "I need a small win to feel better."
+                    </p>
+                </button>
+
+                <button onclick="fillChatInput('I have too many tabs open in my brain. Can we organize?')" class="w-full text-left bg-brand-lavender/30 hover:bg-brand-lavender/50 p-4 rounded-2xl border border-brand-lavender/50 cursor-pointer transition-all duration-300 group shadow-sm hover:shadow-md hover:-translate-y-0.5 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-brand-lavender"></div>
+                    <p class="text-[10px] text-brand-text-secondary uppercase font-bold mb-1 tracking-wider">Overwhelm</p>
+                    <p class="text-sm font-medium text-brand-primary-dark leading-snug">
+                        "Too many tabs open in my brain..."
+                    </p>
+                </button>
+            </div>
+        </div>
+        
+        <div class="p-5 border-t border-brand-bg-main flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-brand-primary/20 flex items-center justify-center text-brand-primary">
+                <i class="fa-solid fa-seedling text-sm"></i>
+            </div>
+            <div class="text-xs text-brand-text-secondary font-medium">ClarityChloe © 2026</div>
+        </div>
+    </aside>
+
+    <!-- MAIN CHAT AREA -->
+    <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-brand-bg-main">
+        
+        <!-- Mobile Header (Hidden on Desktop) -->
+        <header class="md:hidden flex items-center justify-between p-4 bg-brand-bg-main/90 backdrop-blur-md border-b border-brand-bg-alt z-40 shadow-sm relative">
+            <a href="index.html" class="w-10 h-10 flex items-center justify-center rounded-full bg-brand-bg-alt text-brand-text-secondary active:scale-95 transition-transform">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            
+            <div class="flex flex-col items-center">
+                <h1 class="font-heading font-bold text-brand-primary-dark text-lg leading-tight">AI Coach</h1>
+                <span class="text-[10px] text-brand-success font-medium flex items-center gap-1"><span class="w-1 h-1 rounded-full bg-brand-success animate-pulse"></span> Online</span>
+            </div>
+            
+            <!-- Ideas Button (Mobile Only) -->
+            <button onclick="toggleDrawer()" class="w-10 h-10 flex items-center justify-center rounded-full bg-brand-lavender/30 text-brand-text-primary active:scale-95 transition-transform relative group">
+                <i class="fa-regular fa-lightbulb"></i>
+            </button>
+        </header>
+
+        <!-- Dynamic Top Fade -->
+        <div class="absolute top-16 md:top-0 h-12 w-full bg-gradient-to-b from-brand-bg-main to-transparent z-10 pointer-events-none hidden md:block"></div>
+
+        <!-- Chat Container -->
+        <div id="chat-wrapper" class="flex-1 w-full h-full relative">
+            <div id="n8n-chat" class="w-full h-full"></div>
+        </div>
+
+    </main>
+
+    <!-- MOBILE IDEAS DRAWER -->
+    <div id="drawer-backdrop" onclick="toggleDrawer()" class="fixed inset-0 bg-brand-primary-dark/30 backdrop-blur-sm z-50 md:hidden"></div>
+    <div id="mobile-drawer" class="fixed bottom-0 left-0 w-full bg-brand-bg-main rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-50 md:hidden flex flex-col max-h-[85vh]">
+        <div class="w-full flex justify-center pt-3 pb-2 cursor-pointer" onclick="toggleDrawer()">
+            <div class="w-12 h-1.5 bg-brand-bg-alt rounded-full"></div>
+        </div>
+        <div class="px-6 pb-4 flex items-center justify-between border-b border-brand-bg-alt">
+            <h2 class="font-heading font-bold text-xl text-brand-primary-dark">Conversation Starters</h2>
+            <button onclick="toggleDrawer()" class="w-8 h-8 flex items-center justify-center rounded-full bg-brand-bg-alt text-brand-text-secondary text-sm">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="p-6 overflow-y-auto space-y-4">
+            <button onclick="fillChatInput('I don\'t know where to start today, help me do just one thing.'); toggleDrawer()" class="w-full text-left bg-white p-4 rounded-2xl border border-brand-border-color shadow-sm active:scale-95 transition-transform flex items-center gap-4">
+                <div class="w-10 h-10 rounded-full bg-brand-primary/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-play text-brand-primary flex"></i></div>
+                <div>
+                    <p class="text-[10px] text-brand-text-secondary uppercase font-bold tracking-wider">Analysis Paralysis</p>
+                    <p class="text-sm font-medium text-brand-primary-dark leading-tight mt-0.5">"I don't know where to start today..."</p>
+                </div>
+            </button>
+            <button onclick="fillChatInput('I need a small win to feel better.'); toggleDrawer()" class="w-full text-left bg-white p-4 rounded-2xl border border-brand-border-color shadow-sm active:scale-95 transition-transform flex items-center gap-4">
+                <div class="w-10 h-10 rounded-full bg-brand-sage/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-star text-brand-sage flex"></i></div>
+                <div>
+                    <p class="text-[10px] text-brand-text-secondary uppercase font-bold tracking-wider">Dopamine Hit</p>
+                    <p class="text-sm font-medium text-brand-primary-dark leading-tight mt-0.5">"I need a small win to feel better."</p>
+                </div>
+            </button>
+            <button onclick="fillChatInput('I have too many tabs open in my brain. Can we organize?'); toggleDrawer()" class="w-full text-left bg-white p-4 rounded-2xl border border-brand-border-color shadow-sm active:scale-95 transition-transform flex items-center gap-4">
+                <div class="w-10 h-10 rounded-full bg-brand-lavender/40 flex items-center justify-center shrink-0"><i class="fa-solid fa-layer-group text-purple-400 flex"></i></div>
+                <div>
+                    <p class="text-[10px] text-brand-text-secondary uppercase font-bold tracking-wider">Overwhelm</p>
+                    <p class="text-sm font-medium text-brand-primary-dark leading-tight mt-0.5">"Too many tabs open in my brain..."</p>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+
+        // Initialize Call
+        createChat({
+            webhookUrl: 'https://primary-production-cfc7.up.railway.app/webhook/a14b5f8b-a2bb-47de-b742-16dc198caf1a/chat',
+            target: '#n8n-chat',
+            mode: 'fullscreen', 
+            showWelcomeScreen: false, 
+            initialMessages: [
+                "Hi, I'm here for you 💜 ✨",
+                "This is your safe space - private, judgment-free, available 24/7. You can talk about ADHD, ask about your tools, or just vent 🛡️.",
+                "How are you feeling right now?"
+            ],
+            i18n: {
+                en: {
+                    title: '',
+                    subtitle: '',
+                    inputPlaceholder: 'Message AI Coach...',
+                    getStarted: 'Start talking',
+                    footer: '', 
+                },
+            },
+        });
+        
+        // --- CUSTOM AVATAR INJECTION ---
+        const injectAvatarsToMessages = () => {
+            const botMessages = document.querySelectorAll('.chat-message:not(.message-user)');
+            
+            botMessages.forEach(msg => {
+                if (msg.dataset.avatarInjected) return;
+                msg.dataset.avatarInjected = 'true';
+                
+                msg.style.position = 'relative';
+                
+                if(window.innerWidth > 640) {
+                    msg.style.marginLeft = '56px';
+                    const img = document.createElement('img');
+                    img.className = 'clarity-msg-avatar';
+                    img.src = 'avatr.jpeg'; 
+                    img.onerror = function() { this.src = 'https://ui-avatars.com/api/?name=C&background=C5D1C5&color=fff'; };
+                    msg.appendChild(img);
+                } else {
+                    // Mobile avatar styling
+                    msg.style.marginLeft = '36px';
+                    const img = document.createElement('img');
+                    img.className = 'clarity-msg-avatar';
+                    img.src = 'avatr.jpeg'; 
+                    img.onerror = function() { this.src = 'https://ui-avatars.com/api/?name=C&background=C5D1C5&color=fff'; };
+                    img.style.left = '-36px';
+                    img.style.width = '28px';
+                    img.style.height = '28px';
+                    img.style.bottom = '4px';
+                    msg.appendChild(img);
+                }
+            });
+
+            // Make sure the last message has margin bottom so the input doesn't overlap it
+            const allMessages = document.querySelectorAll('.chat-message');
+            if(allMessages.length > 0) {
+                // remove extra margin from all
+                allMessages.forEach(m => m.style.marginBottom = '1.5rem');
+                // add large margin to the very last one
+                allMessages[allMessages.length-1].style.marginBottom = '40px';
+            }
+        };
+
+        const observer = new MutationObserver(() => {
+            injectAvatarsToMessages();
+        });
+        
+        setTimeout(() => {
+            const chatList = document.querySelector('.messages-list');
+            if(chatList) {
+                observer.observe(chatList, { childList: true, subtree: true });
+                injectAvatarsToMessages();
+            }
+        }, 1000);
+
+        // --- PREFILL AND DRAWER LOGIC ---
+        window.fillChatInput = (text) => {
+            const textarea = document.querySelector('.n8n-chat textarea');
+            if (textarea) {
+                textarea.value = text;
+                const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
+                nativeInputValueSetter.call(textarea, text);
+                textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                textarea.focus();
+            }
+        };
+
+        window.toggleDrawer = () => {
+            const drawer = document.getElementById('mobile-drawer');
+            const backdrop = document.getElementById('drawer-backdrop');
+            drawer.classList.toggle('open');
+            backdrop.classList.toggle('open');
+        };
+
+    </script>
+</body>
+</html>

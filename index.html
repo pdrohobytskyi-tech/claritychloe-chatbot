@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClarityHub | Toolkit</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- V2 Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            // V2 Colors
+                            primary: '#C4A882',
+                            'primary-dark': '#1A1614',
+                            accent: '#D4A5A5',
+                            'accent-light': '#F0E0E0',
+                            lavender: '#D5C8E6',
+                            sage: '#C5D1C5',
+                            'bg-main': '#FDFBF7',
+                            'bg-alt': '#F0EBE3',
+                            'bg-emotional': '#F5E6E0',
+                            'bg-dark': '#3D2C2C',
+                            'text-primary': '#2C2420',
+                            'text-secondary': '#7A6E65',
+                            'border-color': '#E8E0D8',
+                            success: '#7BAE7F',
+                            error: '#C27070',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['"Playfair Display"', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { 
+            background-color: #FDFBF7; /* bg-main */
+            overflow-x: hidden; 
+            color: #2C2420; /* text-primary */
+        }
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+        
+        .fade-in { animation: fadeIn 0.8s ease-out forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #E8E0D8; border-radius: 20px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col md:flex-row antialiased">
+
+    <!-- SIDEBAR (Left) -->
+    <aside class="w-full md:w-80 lg:w-96 bg-brand-bg-alt border-r border-brand-border-color h-auto md:h-screen md:sticky md:top-0 flex flex-col p-8 md:p-10 shadow-[2px_0_15px_rgba(0,0,0,0.03)] z-20 overflow-y-auto custom-scroll shrink-0">
+        
+        <!-- Header -->
+        <div class="mb-10">
+            <div class="inline-block bg-white text-brand-text-primary px-4 py-1.5 rounded-full text-[10px] font-bold mb-6 tracking-widest uppercase shadow-sm border border-brand-border-color">
+                Member Area
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold text-brand-primary-dark mb-4 font-heading tracking-tight">
+                Clarity Hub
+            </h1>
+            <p class="text-sm text-brand-text-secondary leading-relaxed">
+                Your safe space to breathe. <br>
+                <span class="text-brand-text-primary font-medium mt-1 block">Judgment-free, at your own pace.</span>
+            </p>
+        </div>
+
+        <!-- AI Coach Hero Banner inside Sidebar -->
+        <div class="bg-white rounded-3xl p-6 md:p-8 mb-8 border border-brand-border-color shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
+            <div class="absolute -right-6 -top-6 w-24 h-24 bg-brand-accent/10 rounded-full blur-2xl group-hover:bg-brand-accent/20 transition-all duration-500"></div>
+            
+            <div class="flex items-center gap-4 mb-5 relative z-10">
+                <div class="w-12 h-12 rounded-full bg-brand-bg-main border-2 border-brand-accent flex items-center justify-center shrink-0">
+                    <img src="avatr.jpeg" alt="AI Coach" class="w-full h-full rounded-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=C&background=C5D1C5&color=fff'">
+                </div>
+                <div>
+                    <h3 class="text-brand-primary-dark font-bold font-heading text-xl">AI Coach</h3>
+                    <p class="text-xs text-brand-text-secondary flex items-center gap-1.5 mt-0.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-brand-success animate-pulse"></span> Available 24/7
+                    </p>
+                </div>
+            </div>
+            
+            <p class="text-sm text-brand-text-secondary mb-6 relative z-10 leading-relaxed">
+                Need to vent, organize your thoughts, or just find a small win today? I'm here for you.
+            </p>
+            
+            <a href="chat.html" class="relative z-10 w-full flex items-center justify-center gap-2 bg-brand-bg-dark hover:bg-black text-white py-3.5 px-6 rounded-xl text-sm font-semibold transition-all duration-300 shadow-sm hover:shadow-md group-hover:-translate-y-0.5">
+                Start Session
+                <i class="fa-solid fa-arrow-right text-xs transition-transform group-hover:translate-x-1"></i>
+            </a>
+        </div>
+        
+        <div class="mt-auto pt-8 text-xs text-brand-text-secondary/60 font-medium font-sans">
+            ClarityChloe © 2026
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT (Right) -->
+    <main class="flex-1 p-6 md:p-12 lg:p-16 overflow-y-auto h-full max-w-5xl mx-auto custom-scroll">
+        
+        <!-- PRODUCTS SECTION -->
+        <div class="max-w-4xl fade-in delay-1">
+            <div class="mb-10">
+                <h2 class="text-3xl font-bold text-brand-primary-dark font-heading mb-3">Your Digital Toolkit</h2>
+                <p class="text-brand-text-secondary text-sm max-w-xl leading-relaxed">Everything you need to navigate your ADHD with compassion. Click on any tool to see how to use it best.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-12">
+
+                <!-- 1. NOTION PLANNER -->
+                <div class="bg-white rounded-3xl shadow-sm border border-brand-border-color hover:border-brand-sage hover:shadow-md transition-all duration-300 overflow-hidden group">
+                    <details class="group">
+                        <summary class="flex justify-between items-start p-6 md:p-8 cursor-pointer bg-white group-open:bg-brand-bg-main transition-colors">
+                            <div class="flex gap-4">
+                                <div class="w-14 h-14 rounded-2xl bg-brand-sage/20 text-brand-text-secondary flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform duration-300">
+                                    <i class="fa-solid fa-laptop-code text-brand-sage mix-blend-multiply"></i>
+                                </div>
+                                <div class="pt-1">
+                                    <h3 class="font-bold text-lg text-brand-primary-dark">Notion Planner</h3>
+                                    <p class="text-xs text-brand-text-secondary mt-1 tracking-wide font-medium">Digital • Science-backed</p>
+                                </div>
+                            </div>
+                            <span class="text-brand-text-secondary/50 group-open:rotate-180 transition-transform duration-300 mt-3"><i class="fa-solid fa-chevron-down"></i></span>
+                        </summary>
+                        <div class="px-6 md:px-8 pb-8 pt-2 bg-brand-bg-main text-sm text-brand-text-secondary space-y-5 border-t border-brand-border-color/50">
+                            <p class="font-semibold text-brand-primary-dark text-base">🚀 Quick Start (5 minutes):</p>
+                            <ol class="space-y-3 text-sm list-decimal list-inside text-brand-text-primary pl-1">
+                                <li><strong>Open "Today"</strong> - Write max 3 key actions (not 10!)</li>
+                                <li><strong>Choose Energy Level</strong> - Low? Use only ⚡Low tasks</li>
+                                <li><strong>Activate Overwhelm Mode</strong> - See only 1 task at a time</li>
+                            </ol>
+
+                            <div class="bg-brand-lavender/10 p-5 rounded-2xl border border-brand-lavender/30 shadow-sm mt-4">
+                                <p class="text-sm text-brand-text-primary leading-relaxed">
+                                    <span class="font-bold text-brand-primary-dark">💡 Pro Tip:</span> Don't know where to start? Go to <span class="font-semibold">Routines</span> and activate "Morning Anchor" - 3 fixed steps to start.
+                                </p>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <!-- 2. 90-DAY WORKBOOK -->
+                <div class="bg-white rounded-3xl shadow-sm border border-brand-border-color hover:border-brand-lavender hover:shadow-md transition-all duration-300 overflow-hidden group fade-in delay-2">
+                    <details class="group">
+                        <summary class="flex justify-between items-start p-6 md:p-8 cursor-pointer bg-white group-open:bg-brand-bg-main transition-colors">
+                            <div class="flex gap-4">
+                                <div class="w-14 h-14 rounded-2xl bg-brand-lavender/20 text-brand-lavender flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform duration-300">
+                                    <i class="fa-solid fa-book-journal-whills mix-blend-multiply"></i>
+                                </div>
+                                <div class="pt-1">
+                                    <h3 class="font-bold text-lg text-brand-primary-dark">90-Day Journey</h3>
+                                    <p class="text-xs text-brand-text-secondary mt-1 tracking-wide font-medium">Workbook • Emotional</p>
+                                </div>
+                            </div>
+                            <span class="text-brand-text-secondary/50 group-open:rotate-180 transition-transform duration-300 mt-3"><i class="fa-solid fa-chevron-down"></i></span>
+                        </summary>
+                        <div class="px-6 md:px-8 pb-8 pt-2 bg-brand-bg-main text-sm text-brand-text-secondary space-y-5 border-t border-brand-border-color/50">
+                            <p class="font-semibold text-brand-primary-dark text-base">📍 How to use it (ADHD-friendly):</p>
+
+                            <div class="bg-white p-5 rounded-2xl border border-brand-border-color shadow-sm space-y-3">
+                                <p class="text-sm font-bold text-brand-primary-dark">✅ You can:</p>
+                                <ul class="text-sm list-disc list-inside space-y-2 text-brand-text-primary pl-1">
+                                    <li>Start on any day (no order needed)</li>
+                                    <li>Skip days when you can't</li>
+                                    <li>Go back and re-read</li>
+                                    <li>Write 2 lines or 2 pages - both are fine</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-brand-emotional/30 p-5 rounded-2xl border border-brand-emotional/60 shadow-sm mt-3">
+                                <p class="text-sm text-brand-text-primary leading-relaxed">
+                                    <span class="font-bold text-brand-primary-dark">🎯 If you're stuck:</span> Go to <span class="font-semibold">Day 7 (Acceptance Day)</span> - it's the perfect emotional reset when you feel you're "not doing enough".
+                                </p>
+                            </div>
+
+                            <p class="text-sm italic text-brand-text-secondary pl-1 border-l-2 border-brand-lavender/30">It's not a perfect journal. It's a gentle mirror.</p>
+                        </div>
+                    </details>
+                </div>
+
+                <!-- 3. RESET PACK -->
+                <div class="bg-white rounded-3xl shadow-sm border border-brand-border-color hover:border-brand-accent hover:shadow-md transition-all duration-300 overflow-hidden group fade-in delay-2">
+                    <details class="group">
+                        <summary class="flex justify-between items-start p-6 md:p-8 cursor-pointer bg-white group-open:bg-brand-bg-main transition-colors">
+                            <div class="flex gap-4">
+                                <div class="w-14 h-14 rounded-2xl bg-brand-accent/10 text-brand-accent flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform duration-300">
+                                    <i class="fa-solid fa-life-ring mix-blend-multiply"></i>
+                                </div>
+                                <div class="pt-1">
+                                    <h3 class="font-bold text-lg text-brand-primary-dark">ADHD Reset Pack</h3>
+                                    <p class="text-xs text-brand-text-secondary mt-1 tracking-wide font-medium">Emergency Kit • 13 Pages</p>
+                                </div>
+                            </div>
+                            <span class="text-brand-text-secondary/50 group-open:rotate-180 transition-transform duration-300 mt-3"><i class="fa-solid fa-chevron-down"></i></span>
+                        </summary>
+                        <div class="px-6 md:px-8 pb-8 pt-2 bg-brand-bg-main text-sm text-brand-text-secondary space-y-5 border-t border-brand-border-color/50">
+                            <p class="font-semibold text-brand-primary-dark text-base">🆘 Which page to use when:</p>
+
+                            <div class="space-y-4">
+                                <div class="bg-brand-error/5 p-5 rounded-2xl border border-brand-error/20">
+                                    <p class="text-sm font-bold text-brand-error mb-2 tracking-wide">EMERGENCY (Acute crisis):</p>
+                                    <ul class="text-sm text-brand-text-primary space-y-2 pl-1">
+                                        <li>• <strong>Pg. 3: Brain Dump</strong> → Empty everything onto paper</li>
+                                        <li>• <strong>Pg. 5: Priority Bridge</strong> → Pick just 1 thing to do NOW</li>
+                                        <li>• <strong>Pg. 7: 5-Min Sensory Reset</strong> → Calm the nervous system</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="bg-sky-50 p-5 rounded-2xl border border-sky-100">
+                                    <p class="text-sm font-bold text-sky-700 mb-2 tracking-wide">🔄 RESET MODE (Restart):</p>
+                                    <ul class="text-sm text-sky-900 space-y-2 pl-1">
+                                        <li>• <strong>Morning Anchor (p.8)</strong> → 3 fixed steps to start</li>
+                                        <li>• <strong>Midday Reset (p.9)</strong> → When you lose the thread after lunch</li>
+                                        <li>• <strong>Weekly Reset (p.12)</strong> → Sunday evening prep</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="bg-brand-primary/10 p-5 rounded-2xl border border-brand-primary/20 shadow-sm mt-4">
+                                <p class="text-sm text-brand-text-primary leading-relaxed">
+                                    <span class="font-bold text-brand-primary-dark">💡 Pro Tip:</span> Keep the Reset Pack always visible (not in a drawer). It only works if it's "grab & go" in moments of panic.
+                                </p>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <!-- 4. CLEANING BUNDLE -->
+                <div class="bg-white rounded-3xl shadow-sm border border-brand-border-color hover:border-brand-success hover:shadow-md transition-all duration-300 overflow-hidden group fade-in delay-3">
+                    <details class="group">
+                        <summary class="flex justify-between items-start p-6 md:p-8 cursor-pointer bg-white group-open:bg-brand-bg-main transition-colors">
+                            <div class="flex gap-4">
+                                <div class="w-14 h-14 rounded-2xl bg-brand-success/10 text-brand-success flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform duration-300">
+                                    <i class="fa-solid fa-broom mix-blend-multiply"></i>
+                                </div>
+                                <div class="pt-1">
+                                    <h3 class="font-bold text-lg text-brand-primary-dark">Cleaning Bundle</h3>
+                                    <p class="text-xs text-brand-text-secondary mt-1 tracking-wide font-medium">Home Hacks • System</p>
+                                </div>
+                            </div>
+                            <span class="text-brand-text-secondary/50 group-open:rotate-180 transition-transform duration-300 mt-3"><i class="fa-solid fa-chevron-down"></i></span>
+                        </summary>
+                        <div class="px-6 md:px-8 pb-8 pt-2 bg-brand-bg-main text-sm text-brand-text-secondary space-y-5 border-t border-brand-border-color/50">
+                            <p class="font-semibold text-brand-primary-dark text-base">⚡ The 3 most effective hacks:</p>
+
+                            <div class="space-y-3">
+                                <div class="bg-brand-success/5 p-4 rounded-2xl border border-brand-success/20">
+                                    <p class="text-sm text-brand-text-primary"><strong>1. 5-Minute Blitz</strong> → Timer + 1 zone. Stop when it rings. Done = dopamine.</p>
+                                </div>
+                                
+                                <div class="bg-brand-lavender/10 p-4 rounded-2xl border border-brand-lavender/30">
+                                    <p class="text-sm text-brand-text-primary"><strong>2. One-Touch Rule</strong> → Pick something up? Put it back immediately. Stops accumulation.</p>
+                                </div>
+                                
+                                <div class="bg-brand-sage/10 p-4 rounded-2xl border border-brand-sage/30">
+                                    <p class="text-sm text-brand-text-primary"><strong>3. Zone Cleaning</strong> → Monday = kitchen. Tuesday = bathroom. Not everything at once.</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-5 rounded-2xl border border-brand-border-color shadow-sm mt-4">
+                                <p class="text-sm text-brand-text-primary leading-relaxed">
+                                    <span class="font-bold text-brand-primary-dark">When you feel "I can't do it":</span> Open the <strong>Room Checklist</strong> and do just 1 task. Even "emptying the trash" counts.
+                                </p>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <!-- 5. PDF PLANNERS -->
+                <div class="bg-white rounded-3xl shadow-sm border border-brand-border-color hover:border-brand-primary hover:shadow-md transition-all duration-300 overflow-hidden group fade-in delay-3">
+                    <details class="group">
+                        <summary class="flex justify-between items-start p-6 md:p-8 cursor-pointer bg-white group-open:bg-brand-bg-main transition-colors">
+                            <div class="flex gap-4">
+                                <div class="w-14 h-14 rounded-2xl bg-brand-primary/10 text-brand-primary flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform duration-300">
+                                    <i class="fa-solid fa-tablet-screen-button mix-blend-multiply"></i>
+                                </div>
+                                <div class="pt-1">
+                                    <h3 class="font-bold text-lg text-brand-primary-dark">PDF Planners</h3>
+                                    <p class="text-xs text-brand-text-secondary mt-1 tracking-wide font-medium">2 Versions • Printable</p>
+                                </div>
+                            </div>
+                            <span class="text-brand-text-secondary/50 group-open:rotate-180 transition-transform duration-300 mt-3"><i class="fa-solid fa-chevron-down"></i></span>
+                        </summary>
+                        <div class="px-6 md:px-8 pb-8 pt-2 bg-brand-bg-main text-sm text-brand-text-secondary space-y-5 border-t border-brand-border-color/50">
+                             <p class="font-semibold text-brand-primary-dark text-base">📋 Which version to use:</p>
+
+                            <div class="space-y-3">
+                                <div class="bg-white p-4 rounded-2xl border border-brand-border-color shadow-sm">
+                                    <p class="text-sm text-brand-text-primary"><strong>Base Version</strong> → For normal days where you have energy to track</p>
+                                </div>
+                                
+                                <div class="bg-brand-alt p-4 rounded-2xl border border-brand-border-color">
+                                    <p class="text-sm text-brand-text-primary"><strong>Soft Color (Mental Overload)</strong> → When even bright colors overstimulate you</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-brand-sage/10 p-5 rounded-2xl border border-brand-sage/30 shadow-sm mt-4">
+                                <p class="text-sm text-brand-text-primary leading-relaxed">
+                                    <span class="font-bold text-brand-primary-dark">💡 Pro Tip:</span> Print only the pages you really use (not everything!). Use the <strong>Energy Tracker</strong> to understand WHEN you are most productive.
+                                </p>
+                            </div>
+
+                            <p class="text-sm italic text-brand-text-secondary pl-1 border-l-2 border-brand-border-color">It's not mandatory to fill every space. Use only what you need.</p>
+                        </div>
+                    </details>
+                </div>
+
+                <!-- 6. E-BOOK -->
+                <div class="bg-white rounded-3xl shadow-sm border border-brand-border-color hover:border-[#E8B44B] hover:shadow-md transition-all duration-300 overflow-hidden group fade-in delay-3">
+                    <details class="group">
+                        <summary class="flex justify-between items-start p-6 md:p-8 cursor-pointer bg-white group-open:bg-brand-bg-main transition-colors">
+                            <div class="flex gap-4">
+                                <div class="w-14 h-14 rounded-2xl bg-[#E8B44B]/10 text-[#E8B44B] flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform duration-300">
+                                    <i class="fa-solid fa-brain mix-blend-multiply"></i>
+                                </div>
+                                <div class="pt-1">
+                                    <h3 class="font-bold text-lg text-brand-primary-dark">E-Book</h3>
+                                    <p class="text-xs text-brand-text-secondary mt-1 tracking-wide font-medium">Education • Compassion</p>
+                                </div>
+                            </div>
+                            <span class="text-brand-text-secondary/50 group-open:rotate-180 transition-transform duration-300 mt-3"><i class="fa-solid fa-chevron-down"></i></span>
+                        </summary>
+                        <div class="px-6 md:px-8 pb-8 pt-2 bg-brand-bg-main text-sm text-brand-text-secondary space-y-5 border-t border-brand-border-color/50">
+                            <p class="font-semibold text-brand-primary-dark text-base">📖 When to read it:</p>
+
+                            <div class="space-y-3 bg-white p-5 rounded-2xl border border-brand-border-color shadow-sm">
+                                <div class="flex gap-3">
+                                    <span class="text-brand-primary-dark font-bold shrink-0">Ch. 1-2</span>
+                                    <span class="text-sm text-brand-text-primary">→ When you need to understand "why am I like this"</span>
+                                </div>
+                                <div class="w-full h-px bg-brand-border-color/50"></div>
+                                <div class="flex gap-3">
+                                    <span class="text-brand-primary-dark font-bold shrink-0">Ch. 3</span>
+                                    <span class="text-sm text-brand-text-primary">→ Time Blindness (always late?)</span>
+                                </div>
+                                <div class="w-full h-px bg-brand-border-color/50"></div>
+                                <div class="flex gap-3">
+                                    <span class="text-brand-primary-dark font-bold shrink-0">Ch. 4</span>
+                                    <span class="text-sm text-brand-text-primary">→ Hyperfocus (getting lost for hours)</span>
+                                </div>
+                                <div class="w-full h-px bg-brand-border-color/50"></div>
+                                <div class="flex gap-3">
+                                    <span class="text-brand-primary-dark font-bold shrink-0">Ch. 6</span>
+                                    <span class="text-sm text-brand-text-primary">→ Crisis Navigation (when it's TOO MUCH)</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-brand-primary/10 p-5 rounded-2xl border border-brand-primary/20 shadow-sm mt-4">
+                                <p class="text-sm text-brand-text-primary leading-relaxed">
+                                    <span class="font-bold text-brand-primary-dark">💡 It's not a book to read all at once:</span> Go straight to the chapter you need TODAY. It's made to be consulted.
+                                </p>
+                            </div>
+
+                            <p class="text-sm italic text-brand-text-secondary pl-1 border-l-2 border-brand-border-color">If you feel "broken" while reading → Ch. 5 (Self-Compassion). Your brain isn't a bug, it's a feature.</p>
+                        </div>
+                    </details>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
