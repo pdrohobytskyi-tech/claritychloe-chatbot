@@ -158,10 +158,12 @@
             margin: 0 auto !important;
             background: white !important; /* Changed back to white per user request */
             border-radius: 30px !important;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.04), 0 0 0 1px rgba(232,224,216,0.6) inset !important;
+            border: 2px solid #C5D1C5 !important; /* Solid Sage border */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important;
             padding: 0.35rem 0.5rem !important;
             display: flex !important;
             align-items: center !important;
+            transition: all 0.3s ease !important;
         }
         
         /* Adjust md: breakpoint for form repositioning due to sidebar */
@@ -171,9 +173,9 @@
             }
         }
 
-        .chat-input:focus-within {
-            box-shadow: 0 10px 40px rgba(212, 165, 165, 0.15) !important;
-            border-color: #D4A5A5 !important;
+        .chat-input:focus-within, form:focus-within {
+            box-shadow: 0 8px 30px rgba(197, 209, 197, 0.25) !important;
+            border-color: #A5B9A5 !important; /* Slightly darker/richer sage when active */
         }
 
         .n8n-chat textarea {
