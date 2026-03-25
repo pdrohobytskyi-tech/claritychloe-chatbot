@@ -150,8 +150,8 @@
 
         /* The visual floating array (form wrapper) */
         /* Using box-shadow to create exactly TWO controlled rings */
-        .chat-footer form, 
-        .n8n-chat form {
+        /* The direct parent of textarea is the primary container element in n8n */
+        .n8n-chat div:has(> textarea) {
             position: relative !important;
             width: 100% !important;
             max-width: 760px !important;
@@ -173,26 +173,17 @@
         
         /* Adjust md: breakpoint for form repositioning due to sidebar */
         @media (min-width: 768px) {
-            .chat-footer form,
-            .n8n-chat form {
+            .n8n-chat div:has(> textarea) {
                 left: calc(50% + 140px) !important; 
             }
         }
 
-        .chat-footer form:focus-within,
-        .n8n-chat form:focus-within {
+        .n8n-chat div:has(> textarea):focus-within {
             border-color: #A5B9A5 !important; 
             box-shadow: 
                 0 0 0 4px white, 
                 0 0 0 6px #A5B9A5, 
                 0 8px 30px rgba(197, 209, 197, 0.25) !important;
-        }
-
-        /* Target the exact internal wrapper if n8n adds its own border */
-        .n8n-chat form > div {
-            border: none !important;
-            box-shadow: none !important;
-            background: transparent !important;
         }
 
         .n8n-chat textarea {
