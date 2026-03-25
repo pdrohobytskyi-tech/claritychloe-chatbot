@@ -148,18 +148,22 @@
             display: none !important;
         }
 
-        /* The visual floating pill (is actually just the form inside the footer) */
-        .chat-input,
-        form,
-        .n8n-chat div:has(textarea) {
+        /* The visual floating array (form wrapper) */
+        /* Using box-shadow to create exactly TWO controlled rings */
+        .chat-footer form {
             position: relative !important;
             width: 100% !important;
             max-width: 760px !important;
             margin: 0 auto !important;
-            background: white !important; /* Changed back to white per user request */
+            background: white !important; 
             border-radius: 30px !important;
-            border: 2px solid #C5D1C5 !important; /* Solid Sage border */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important;
+            /* Ring 1 (Inner) */
+            border: 2px solid #C5D1C5 !important; 
+            /* Ring 2 (Outer) with 4px white gap between */
+            box-shadow: 
+                0 0 0 4px white, 
+                0 0 0 6px #C5D1C5, 
+                0 4px 15px rgba(0,0,0,0.05) !important;
             padding: 0.35rem 0.5rem !important;
             display: flex !important;
             align-items: center !important;
@@ -168,14 +172,25 @@
         
         /* Adjust md: breakpoint for form repositioning due to sidebar */
         @media (min-width: 768px) {
-            .chat-input, form, .n8n-chat div:has(textarea) {
-                left: calc(50% + 140px) !important; /* Offset by half the sidebar width (280px / 2 = 140px) */
+            .chat-footer form {
+                left: calc(50% + 140px) !important; 
             }
         }
 
-        .chat-input:focus-within, form:focus-within {
-            box-shadow: 0 8px 30px rgba(197, 209, 197, 0.25) !important;
-            border-color: #A5B9A5 !important; /* Slightly darker/richer sage when active */
+        .chat-footer form:focus-within {
+            border-color: #A5B9A5 !important; 
+            box-shadow: 
+                0 0 0 4px white, 
+                0 0 0 6px #A5B9A5, 
+                0 8px 30px rgba(197, 209, 197, 0.25) !important;
+        }
+
+        /* Prevent any native n8n input wrappers from drawing their own borders */
+        .chat-footer .n8n-input,
+        .chat-footer .n8n-input > div {
+            border: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
         }
 
         .n8n-chat textarea {
