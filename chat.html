@@ -110,9 +110,10 @@
 
         /* Message List Area */
         .messages-list,
-        .n8n-chat > div > div:nth-child(2) {
+        .n8n-chat > div > div:nth-child(2),
+        .chat-messages-list {
             padding: 1.5rem 1rem !important; 
-            padding-bottom: 140px !important; /* CRITICAL: Space for the floating input so it doesn't overlap last message */
+            padding-bottom: 250px !important; /* Large padding to guarantee scrolling past floating input */
             max-width: 800px !important;
             margin: 0 auto !important;
             width: 100% !important;
@@ -125,6 +126,13 @@
             max-width: 85% !important;
             margin-bottom: 1.5rem !important;
             clear: both;
+        }
+
+        /* Clean up n8n native footer to prevent strange extra bars */
+        .chat-footer {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
         }
 
         /* Floating Input Bar - FIXED TO BOTTOM OF VIEWPORT */
@@ -179,7 +187,15 @@
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            background-color: #D4A5A5 !important;
+            background-color: #F0EBE3 !important; /* Disabled color */
+            color: #A09890 !important;
+            transition: all 0.2s ease !important;
+        }
+        
+        .n8n-chat button[type="submit"]:not(:disabled) {
+            background-color: #7BAE7F !important; /* green success color */
+            color: white !important;
+            transform: scale(1.05) !important;
         }
 
         /* Avatar styling for bot */
@@ -276,12 +292,12 @@
             </a>
             
             <div class="flex flex-col items-center">
-                <h1 class="font-heading font-bold text-brand-primary-dark text-lg leading-tight">AI Coach</h1>
+                <h1 class="font-heading font-bold text-brand-primary-dark text-2xl leading-tight">AI Coach</h1>
                 <span class="text-[10px] text-brand-success font-medium flex items-center gap-1"><span class="w-1 h-1 rounded-full bg-brand-success animate-pulse"></span> Online</span>
             </div>
             
             <!-- Ideas Button (Mobile Only) -->
-            <button onclick="toggleDrawer()" class="w-10 h-10 flex items-center justify-center rounded-full bg-brand-lavender/30 text-brand-text-primary active:scale-95 transition-transform relative group">
+            <button onclick="toggleDrawer()" class="w-10 h-10 flex items-center justify-center rounded-full bg-brand-bg-alt text-brand-text-secondary active:scale-95 transition-transform relative group">
                 <i class="fa-regular fa-lightbulb"></i>
             </button>
         </header>
@@ -396,7 +412,13 @@
                 // remove extra margin from all
                 allMessages.forEach(m => m.style.marginBottom = '1.5rem');
                 // add large margin to the very last one
-                allMessages[allMessages.length-1].style.marginBottom = '40px';
+                allMessages[allMessages.length-1].style.marginBottom = '80px';
+                
+                // Keep scrolling bottom logic stable when new messages arrive
+                const list = document.querySelector('.chat-messages-list');
+                if (list) {
+                    list.scrollTop = list.scrollHeight;
+                }
             }
         };
 
